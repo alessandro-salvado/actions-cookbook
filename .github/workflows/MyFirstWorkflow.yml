@@ -9,7 +9,7 @@ on:
 jobs:
   first_job:
     name: My first job
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  
     steps:
       - run: |
           echo "Hello ${{ vars.WHO_TO_GREET }} 👋 from ${{ github.actor }}." 
@@ -18,3 +18,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.0
       - run: tree
+  Test:
+    name: Test job
+    runs-on: ubuntu-latest  
+    environment: Test
+    needs: first_job
