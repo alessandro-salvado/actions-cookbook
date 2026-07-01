@@ -9,14 +9,36 @@ on:
 jobs:
   first_job:
     name: My first job
-    runs-on: ubuntu-latest  
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - run: |
           echo "Hello ${{ vars.WHO_TO_GREET }} 👋 from ${{ github.actor }}." 
           echo "My secret is 🤫 ${{ secrets.MY_SECRET }}."
           echo "Current branch is '${{ github.ref }}'."
       - name: Checkout
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.
+      - name: Actionlint
+        uses: raven-actions/actionlint@v2
+        with:
+          matcher: false  # optional
+          cache: false  # optional
+          fail-on-error: false  # optional
+          files: "tests/*.yml, tests/*.yaml"  # optional, example on how to grab all .yml and .yaml files from the test directory
+          flags: "-ignore SC2086"  # optional
+      - name: actionlint Summary
+        if: ${{ steps.actionlint.outputs.exit-code != 0 }}  # example usage, do echo only when actionlint action failed
+        run: |
+          echo "Used actionlint version ${{ steps.actionlint.outputs.version-semver }}"
+          echo "Used actionlint release ${{ steps.actionlint.outputs.version-tag }}"
+          echo "actionlint ended with ${{ steps.actionlint.outputs.exit-code }} exit code"
+          echo "actionlint ended because '${{ steps.actionlint.outputs.exit-message }}'"
+          echo "actionlint found ${{ steps.actionlint.outputs.total-errors }} errors"
+          echo "actionlint checked ${{ steps.actionlint.outputs.total-files }} files"
+          echo "actionlint cache used: ${{ steps.actionlint.outputs.cache-hit }}"
+          exit ${{ steps.actionlint.outputs.exit-code }}
       - run: tree
 
   Test:
