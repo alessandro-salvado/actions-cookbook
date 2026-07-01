@@ -16,5 +16,5 @@ jobs:
           echo "My secret is 🤫 ${{ secrets.MY_SECRET }}."
           echo "Current branch is '${{ github.ref }}'."
       - name: Checkout
-        uses: actions/checkout@7.0.0
+        uses: actions/checkout@v7.0.0
       - run: tree
